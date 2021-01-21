@@ -3,7 +3,7 @@
 	MyGame = ig.Game.extend({
         name: "MJS-Game",
         version: "1.0.0",
-        frameworkVersion: "1.0.14",
+        frameworkVersion: "1.0.16",
         sessionData: {},
 		io: null,
 		paused: false,
@@ -75,12 +75,12 @@
 			if(ig.ua.mobile) {
 				this.director = new ig.Director(this, [
 					LevelOpening,
-					LevelTestMobile
+					LevelHome
 				]);
 			} else {
 				this.director = new ig.Director(this, [
 					LevelOpening,
-					LevelTestDesktop
+					LevelHome
 				]);
 			}
 			// CALL LOAD LEVELS
