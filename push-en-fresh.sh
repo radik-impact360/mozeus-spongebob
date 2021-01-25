@@ -1,2 +1,2 @@
 #! /bin/bash
-sh push.sh -b -l en -n -g 'somefix'
+bash push.sh -b -l en -n -g 'somefix'

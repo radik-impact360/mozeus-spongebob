@@ -8,7 +8,6 @@
 #! /bin/bash
 # Usage: bash push.sh [options]
 # Example: bash push.sh -b -d (bake, then deploy)
-VERSION="1.1.0"
 
 # Configurations
 BITBUCKET_BRANCH="master"
@@ -27,7 +26,6 @@ bake (){
     echo ""
 
     cd tools
-    chmod +x bake.sh
     bash bake.sh
     cd ..
 
@@ -37,7 +35,7 @@ bake (){
 }
 
 secure_regular (){    
-    # main obfuscation
+    # 1st layer of main obfuscation
     echo ""
     echo "Preparing domainlock ..."
     echo ""
@@ -50,11 +48,17 @@ secure_regular (){
     echo ""
     python inject_domainlock_breakout_info.py 'domainlock.js'
     
+    # suppress console functions, freeze console and context2D
+    echo ""
+    echo "Injecting Anti-Tampering protection code"
+    echo ""
+    python inject_protection.py 'domainlock.js'
+    
     echo ""
     echo "Preparing factory domainlock ..."
     echo ""
     prep_factory_domainlock
-
+    
     echo ""
     echo "Injecting domainlock ..."
     echo ""
@@ -65,7 +69,7 @@ secure_regular (){
     echo ""
     rm domainlock.js
 
-    # global obfuscation
+    # 2nd layer of global obfuscation
     echo ""
     echo "Securing by obscuring ..."
     echo ""
@@ -80,7 +84,7 @@ secure_regular (){
 }
 
 secure_strong (){    
-    # main obfuscation
+    # 1st layer of main obfuscation
     echo ""
     echo "Preparing domainlock ..."
     echo ""
@@ -112,11 +116,17 @@ secure_strong (){
     echo ""
     python inject_domainlock_breakout_info.py 'domainlock.js'
     
+    # suppress console functions, freeze console and context2D
+    echo ""
+    echo "Injecting Anti-Tampering protection code"
+    echo ""
+    python inject_protection.py 'domainlock.js'
+    
     echo ""
     echo "Preparing factory domainlock ..."
     echo ""
     prep_factory_domainlock
-
+    
     echo ""
     echo "Injecting domainlock ..."
     echo ""
@@ -127,7 +137,7 @@ secure_strong (){
     echo ""
     rm domainlock.js
 
-    # global obfuscation
+    # 2nd layer of global obfuscation
     echo ""
     echo "Securing by obscuring ..."
     echo ""

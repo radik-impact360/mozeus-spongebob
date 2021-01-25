@@ -1,8 +1,8 @@
 /*!
- *  howler.js v2.2.0
+ *  howler.js v2.1.2
  *  howlerjs.com
  *
- *  (c) 2013-2020, James Simpson of GoldFire Studios
+ *  (c) 2013-2019, James Simpson of GoldFire Studios
  *  goldfirestudios.com
  *
  *  MIT License
@@ -151,20 +151,6 @@
     },
 
     /**
-     * Handle stopping all sounds globally.
-     */
-    stop: function() {
-      var self = this || Howler;
-
-      // Loop through all Howls and stop them.
-      for (var i=0; i<self._howls.length; i++) {
-        self._howls[i].stop();
-      }
-
-      return self;
-    },
-
-    /**
      * Unload and destroy all currently loaded Howl objects.
      * @return {Howler}
      */
@@ -277,7 +263,6 @@
         aac: !!audioTest.canPlayType('audio/aac;').replace(/^no$/, ''),
         caf: !!audioTest.canPlayType('audio/x-caf;').replace(/^no$/, ''),
         m4a: !!(audioTest.canPlayType('audio/x-m4a;') || audioTest.canPlayType('audio/m4a;') || audioTest.canPlayType('audio/aac;')).replace(/^no$/, ''),
-        m4b: !!(audioTest.canPlayType('audio/x-m4b;') || audioTest.canPlayType('audio/m4b;') || audioTest.canPlayType('audio/aac;')).replace(/^no$/, ''),
         mp4: !!(audioTest.canPlayType('audio/x-mp4;') || audioTest.canPlayType('audio/mp4;') || audioTest.canPlayType('audio/aac;')).replace(/^no$/, ''),
         weba: !!audioTest.canPlayType('audio/webm; codecs="vorbis"').replace(/^no$/, ''),
         webm: !!audioTest.canPlayType('audio/webm; codecs="vorbis"').replace(/^no$/, ''),
@@ -327,7 +312,7 @@
         // to the WebAudio API which only needs a single activation.
         // This must occur before WebAudio setup or the source.onended
         // event will not fire.
-        while (self._html5AudioPool.length < self.html5PoolSize) {
+        for (var i=0; i<self.html5PoolSize; i++) {
           try {
             var audioNode = new Audio();
 
@@ -339,7 +324,6 @@
             self._releaseHtml5Audio(audioNode);
           } catch (e) {
             self.noAudio = true;
-            break;
           }
         }
 
@@ -482,20 +466,14 @@
 
         self._suspendTimer = null;
         self.state = 'suspending';
-
-        // Handle updating the state of the audio context after suspending.
-        var handleSuspension = function() {
+        self.ctx.suspend().then(function() {
           self.state = 'suspended';
 
           if (self._resumeAfterSuspend) {
             delete self._resumeAfterSuspend;
             self._autoResume();
           }
-        };
-
-        // Either the state gets suspended or it is interrupted.
-        // Either way, we need to update the state to suspended.
-        self.ctx.suspend().then(handleSuspension, handleSuspension);
+        });
       }, 30000);
 
       return self;
@@ -512,10 +490,10 @@
         return;
       }
 
-      if (self.state === 'running' && self.ctx.state !== 'interrupted' && self._suspendTimer) {
+      if (self.state === 'running' && self._suspendTimer) {
         clearTimeout(self._suspendTimer);
         self._suspendTimer = null;
-      } else if (self.state === 'suspended' || self.state === 'running' && self.ctx.state === 'interrupted') {
+      } else if (self.state === 'suspended') {
         self.ctx.resume().then(function() {
           self.state = 'running';
 
@@ -579,16 +557,12 @@
       self._muted = o.mute || false;
       self._loop = o.loop || false;
       self._pool = o.pool || 5;
-      self._preload = (typeof o.preload === 'boolean' || o.preload === 'metadata') ? o.preload : true;
+      self._preload = (typeof o.preload === 'boolean') ? o.preload : true;
       self._rate = o.rate || 1;
       self._sprite = o.sprite || {};
       self._src = (typeof o.src !== 'string') ? o.src : [o.src];
       self._volume = o.volume !== undefined ? o.volume : 1;
-      self._xhr = {
-        method: o.xhr && o.xhr.method ? o.xhr.method : 'GET',
-        headers: o.xhr && o.xhr.headers ? o.xhr.headers : null,
-        withCredentials: o.xhr && o.xhr.withCredentials ? o.xhr.withCredentials : false,
-      };
+      self._xhrWithCredentials = o.xhrWithCredentials || false;
 
       // Setup all other default properties.
       self._duration = 0;
@@ -636,7 +610,7 @@
       }
 
       // Load the source file unless otherwise specified.
-      if (self._preload && self._preload !== 'none') {
+      if (self._preload) {
         self.load();
       }
 
@@ -747,8 +721,8 @@
         // Use the default sound sprite (plays the full audio length).
         sprite = '__default';
 
-        // Check if there is a single paused sound that isn't ended.
-        // If there is, play that sound. If not, continue as usual.
+        // Check if there is a single paused sound that isn't ended. 
+        // If there is, play that sound. If not, continue as usual.  
         if (!self._playLock) {
           var num = 0;
           for (var i=0; i<self._sounds.length; i++) {
@@ -822,6 +796,7 @@
       var timeout = (duration * 1000) / Math.abs(sound._rate);
       var start = self._sprite[sprite][0] / 1000;
       var stop = (self._sprite[sprite][0] + self._sprite[sprite][1]) / 1000;
+      var loop = !!(sound._loop || self._sprite[sprite][2]);
       sound._sprite = sprite;
 
       // Mark the sound as ended instantly so that this async playback
@@ -834,7 +809,7 @@
         sound._seek = seek;
         sound._start = start;
         sound._stop = stop;
-        sound._loop = !!(sound._loop || self._sprite[sprite][2]);
+        sound._loop = loop;
       };
 
       // End the sound instantly if seek is at the end.
@@ -877,7 +852,7 @@
           }
         };
 
-        if (Howler.state === 'running' && Howler.ctx.state !== 'interrupted') {
+        if (Howler.state === 'running') {
           playWebAudio();
         } else {
           self._playLock = true;
@@ -1276,7 +1251,7 @@
     },
 
     /**
-     * Fade a currently playing sound between two volumes (if no id is passed, all sounds will fade).
+     * Fade a currently playing sound between two volumes (if no id is passsed, all sounds will fade).
      * @param  {Number} from The value to fade from (0.0 to 1.0).
      * @param  {Number} to   The volume to fade to (0.0 to 1.0).
      * @param  {Number} len  Time in milliseconds to fade.
@@ -1299,8 +1274,8 @@
       }
 
       // Make sure the to/from/len values are numbers.
-      from = Math.min(Math.max(0, parseFloat(from)), 1);
-      to = Math.min(Math.max(0, parseFloat(to)), 1);
+      from = parseFloat(from);
+      to = parseFloat(to);
       len = parseFloat(len);
 
       // Set the volume to the start position.
@@ -1363,11 +1338,8 @@
         vol += diff * tick;
 
         // Make sure the volume is in the right bounds.
-        if (diff < 0) {
-          vol = Math.max(to, vol);
-        } else {
-          vol = Math.min(to, vol);
-        }
+        vol = Math.max(0, vol);
+        vol = Math.min(1, vol);
 
         // Round to within 2 decimal points.
         vol = Math.round(vol * 100) / 100;
@@ -2230,7 +2202,7 @@
         self._node.gain.setValueAtTime(volume, Howler.ctx.currentTime);
         self._node.paused = true;
         self._node.connect(Howler.masterGain);
-      } else if (!Howler.noAudio) {
+      } else {
         // Get an unlocked Audio object from the pool.
         self._node = Howler._obtainHtml5Audio();
 
@@ -2244,7 +2216,7 @@
 
         // Setup the new audio node.
         self._node.src = parent._src;
-        self._node.preload = parent._preload === true ? 'auto' : parent._preload;
+        self._node.preload = 'auto';
         self._node.volume = volume * Howler.volume();
 
         // Begin loading the source.
@@ -2353,17 +2325,9 @@
     } else {
       // Load the buffer from the URL.
       var xhr = new XMLHttpRequest();
-      xhr.open(self._xhr.method, url, true);
-      xhr.withCredentials = self._xhr.withCredentials;
+      xhr.open('GET', url, true);
+      xhr.withCredentials = self._xhrWithCredentials;
       xhr.responseType = 'arraybuffer';
-
-      // Apply any custom headers to the request.
-      if (self._xhr.headers) {
-        Object.keys(self._xhr.headers).forEach(function(key) {
-          xhr.setRequestHeader(key, self._xhr.headers[key]);
-        });
-      }
-
       xhr.onload = function() {
         // Make sure we get a successful response back.
         var code = (xhr.status + '')[0];
@@ -2487,7 +2451,7 @@
     var version = appVersion ? parseInt(appVersion[1], 10) : null;
     if (iOS && version && version < 9) {
       var safari = /safari/.test(Howler._navigator && Howler._navigator.userAgent.toLowerCase());
-      if (Howler._navigator && !safari) {
+      if (Howler._navigator && Howler._navigator.standalone && !safari || Howler._navigator && !Howler._navigator.standalone && !safari) {
         Howler.usingWebAudio = false;
       }
     }
@@ -2495,7 +2459,7 @@
     // Create and expose the master GainNode when using Web Audio (useful for plugins or advanced usage).
     if (Howler.usingWebAudio) {
       Howler.masterGain = (typeof Howler.ctx.createGain === 'undefined') ? Howler.ctx.createGainNode() : Howler.ctx.createGain();
-      Howler.masterGain.gain.setValueAtTime(Howler._muted ? 0 : Howler._volume, Howler.ctx.currentTime);
+      Howler.masterGain.gain.setValueAtTime(Howler._muted ? 0 : 1, Howler.ctx.currentTime);
       Howler.masterGain.connect(Howler.ctx.destination);
     }
 
@@ -2519,17 +2483,17 @@
     exports.Howl = Howl;
   }
 
-  // Add to global in Node.js (for testing, etc).
-  if (typeof global !== 'undefined') {
-    global.HowlerGlobal = HowlerGlobal;
-    global.Howler = Howler;
-    global.Howl = Howl;
-    global.Sound = Sound;
-  } else if (typeof window !== 'undefined') {  // Define globally in case AMD is not available or unused.
+  // Define globally in case AMD is not available or unused.
+  if (typeof window !== 'undefined') {
     window.HowlerGlobal = HowlerGlobal;
     window.Howler = Howler;
     window.Howl = Howl;
     window.Sound = Sound;
+  } else if (typeof global !== 'undefined') { // Add to global in Node.js (for testing, etc).
+    global.HowlerGlobal = HowlerGlobal;
+    global.Howler = Howler;
+    global.Howl = Howl;
+    global.Sound = Sound;
   }
 })();
 
@@ -2537,10 +2501,10 @@
 /*!
  *  Spatial Plugin - Adds support for stereo and 3D audio where Web Audio is supported.
  *  
- *  howler.js v2.2.0
+ *  howler.js v2.1.2
  *  howlerjs.com
  *
- *  (c) 2013-2020, James Simpson of GoldFire Studios
+ *  (c) 2013-2019, James Simpson of GoldFire Studios
  *  goldfirestudios.com
  *
  *  MIT License
@@ -2653,9 +2617,9 @@
         self.ctx.listener.forwardX.setTargetAtTime(x, Howler.ctx.currentTime, 0.1);
         self.ctx.listener.forwardY.setTargetAtTime(y, Howler.ctx.currentTime, 0.1);
         self.ctx.listener.forwardZ.setTargetAtTime(z, Howler.ctx.currentTime, 0.1);
-        self.ctx.listener.upX.setTargetAtTime(xUp, Howler.ctx.currentTime, 0.1);
-        self.ctx.listener.upY.setTargetAtTime(yUp, Howler.ctx.currentTime, 0.1);
-        self.ctx.listener.upZ.setTargetAtTime(zUp, Howler.ctx.currentTime, 0.1);
+        self.ctx.listener.upX.setTargetAtTime(x, Howler.ctx.currentTime, 0.1);
+        self.ctx.listener.upY.setTargetAtTime(y, Howler.ctx.currentTime, 0.1);
+        self.ctx.listener.upZ.setTargetAtTime(z, Howler.ctx.currentTime, 0.1);
       } else {
         self.ctx.listener.setOrientation(x, y, z, xUp, yUp, zUp);
       }

@@ -124,3 +124,13 @@ html,body {
 	height:10px;
 	width:100%;
 }
+
+@font-face{
+    font-family:'droid1';
+    src:url('media/fonts/droid-1.ttf');
+}
+
+@font-face{
+    font-family:'droid2';
+    src:url('media/fonts/droid-2.ttf');
+}

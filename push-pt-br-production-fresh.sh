@@ -1,2 +1,2 @@
 #! /bin/bash
-sh push-production.sh -b -l pt-br -n
+bash push-production.sh -b -l pt-br -n

@@ -6,17 +6,17 @@
 */
 var _SETTINGS = {
 	'API':{
-		'Enabled':false,
+		'Enabled':true,
 		'Log':{
 			'Events':{
-				'InitializeGame':false,
-				'EndGame':false,
+				'InitializeGame':true,
+				'EndGame':true,
 				'Level':{
-					'Begin':false,
-					'End':false,
-					'Win':false,
-					'Lose':false,
-					'Draw':false,
+					'Begin':true,
+					'End':true,
+					'Win':true,
+					'Lose':true,
+					'Draw':true,
 				},
 			},
 		},
@@ -24,7 +24,7 @@ var _SETTINGS = {
 	'Ad':{
 		'Mobile':{
 			'Preroll':{
-				'Enabled':false,	
+				'Enabled':true,	
 				'Duration':5,
 				'Width':300,
 				'Height':250,
@@ -88,13 +88,13 @@ var _SETTINGS = {
 
 	'DeveloperBranding':{ // MarketJS Branding
 		'Splash':{
-			'Enabled':false,
+			'Enabled':true,
 		},
 		'Logo':{
-			'Enabled':false,
+			'Enabled':true,
 			'Link':'http://marketjs.com',
 			'LinkEnabled':false,
-			'NewWindow': false,	// open link in new window, although this behavior can be override by browsers preference
+			'NewWindow': true,	// open link in new window, although this behavior can be override by browsers preference
 			'Width':166,
 			'Height':61,
 		}
@@ -107,24 +107,20 @@ var _SETTINGS = {
 		'Logo':{
 			'Enabled':false,
 			'Link':'http://google.com',
-			'LinkEnabled':false, // Makes the logo clickable or not (ie activate/deactivate link)
-			'NewWindow': false,	// open link in new window, although this behavior can be override by browsers preference
+			'LinkEnabled':true, // Makes the logo clickable or not (ie activate/deactivate link)
+			'NewWindow': true,	// open link in new window, although this behavior can be override by browsers preference
 			'Width':280,
 			'Height':34,
 		}
 	},	
 
 	'MoreGames':{
-		'Enabled':false,
+		'Enabled':true,
 		'Link':'http://www.marketjs.com/game/links/mobile',
-		'NewWindow': false,	// open link in new window, although this behavior can be override by browsers preference
+		'NewWindow': true,	// open link in new window, although this behavior can be override by browsers preference
 	},
 		
 	'Gamecenter':{
-		'Enabled':false,
+		'Enabled':true,
 	},
-	
-	'TapToStartAudioUnlock': {
-		'Enabled':false
-	}
 };
