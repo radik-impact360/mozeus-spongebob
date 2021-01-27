@@ -167,11 +167,8 @@
             //     this.spawnEntity(EntityPointerSelector, 50, 50);
             // }
 
-            // if (_ENDDIRECTLY) this.director.loadLevel(4);
-            // else this.director.loadLevel(0);
-
-            this.director.loadLevel(2);
-            // this.director.loadLevel(5);
+            if (_ENDDIRECTLY) this.director.loadLevel(4);
+            else this.director.loadLevel(0);
 
             this.pointer = this.spawnEntity(EntityPointerSelector, 50, 50);
 
