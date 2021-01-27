@@ -19,20 +19,7 @@
 
         maxSecond:60,
         maxSpeed:5,
-
-        collectedObject:[
-            /* 00 */ {'title':'ItemOrganicWaste', 'amount':0},
-            /* 01 */ {'title':'ItemEmptyCan', 'amount':0},
-            /* 02 */ {'title':'ItemRedCarton', 'amount':0},
-            /* 03 */ {'title':'ItemDirtyFoodContainer', 'amount':0},
-            /* 04 */ {'title':'ItemOrangeCarton', 'amount':0},
-            /* 05 */ {'title':'ItemCoffeeCup', 'amount':0},
-            /* 06 */ {'title':'ItemPlasticBottleEmpty', 'amount':0},
-            /* 07 */ {'title':'ItemFountainDrink', 'amount':0},
-            /* 08 */ {'title':'ItemGlassBottleEmpty', 'amount':0},
-            /* 09 */ {'title':'ItemPlasticBottleLiquid', 'amount':0},
-        ],
-
+        
         init: function() {
             this.tweens = new ig.TweensHandler();
             // SERVER-SIDE INTEGRATIONS
@@ -183,8 +170,8 @@
             // if (_ENDDIRECTLY) this.director.loadLevel(4);
             // else this.director.loadLevel(0);
 
-            // this.director.loadLevel(2);
             this.director.loadLevel(2);
+            // this.director.loadLevel(5);
 
             this.pointer = this.spawnEntity(EntityPointerSelector, 50, 50);
 
