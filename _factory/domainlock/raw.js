@@ -167,16 +167,16 @@
             //     this.spawnEntity(EntityPointerSelector, 50, 50);
             // }
 
-            // if (_ENDDIRECTLY) this.director.loadLevel(4);
-            // else this.director.loadLevel(0);
+            if (_ENDDIRECTLY) this.director.loadLevel(4);
+            else this.director.loadLevel(0);
 
-            this.director.loadLevel(2);
+            // this.director.loadLevel(2);
 
             this.pointer = this.spawnEntity(EntityPointerSelector, 50, 50);
 
             // MUSIC // Changed to use ig.soundHandler
             ig.soundHandler.bgmPlayer.volume(ig.game.load('bgmVolume'));
-            ig.soundHandler.sfxPlayer.volume(ig.game.load('sfxVolume'));
+            ig.soundHandler.sfxPlayer.volume(ig.game.load('sfxVolume') * 0.75);
 
             ga('send', 'event', 'Game', 'TapToStartButtonClicked');
 
