@@ -122,7 +122,6 @@
 
         finalize: function() {
             this.start();
-
             ig.sizeHandler.reorient();
         },
         removeLoadingWheel: function() {

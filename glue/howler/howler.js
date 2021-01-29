@@ -297,10 +297,17 @@
         self._mobileUnloaded = true;
         self.unload();
       }
+      
+      // If we don't have an AudioContext created yet, run the setup.
+      if (!self.ctx) {
+        setupAudioContext();
+      }
 
       // Scratch buffer for enabling iOS to dispose of web audio buffers correctly, as per:
       // http://stackoverflow.com/questions/24119684
-      self._scratchBuffer = self.ctx.createBuffer(1, 1, 22050);
+      if (self.ctx) {
+        self._scratchBuffer = self.ctx.createBuffer(1, 1, 22050);
+      }
 
       // Call this method on touch start to create and play a buffer,
       // then check if the audio actually played to determine if
@@ -347,6 +354,11 @@
 
         // Fix Android can not play in suspend state.
         self._autoResume();
+        
+        // If we don't have an AudioContext created yet, run the setup.
+        if (!self.ctx) {
+          setupAudioContext();
+        }
 
         // Create an empty buffer.
         var source = self.ctx.createBufferSource();
@@ -2089,6 +2101,11 @@
      */
     _refreshBuffer: function(sound) {
       var self = this;
+      
+      // If we don't have an AudioContext created yet, run the setup.
+      if (!Howler.ctx) {
+        setupAudioContext();
+      }
 
       // Setup the buffer source for playback.
       sound._node.bufferSource = Howler.ctx.createBufferSource();
@@ -2197,6 +2214,11 @@
       var volume = (Howler._muted || self._muted || self._parent._muted) ? 0 : self._volume;
 
       if (parent._webAudio) {
+        // If we don't have an AudioContext created yet, run the setup.
+        if (!Howler.ctx) {
+          setupAudioContext();
+        }
+          
         // Create the gain node for controlling volume (the source will connect to this).
         self._node = (typeof Howler.ctx.createGain === 'undefined') ? Howler.ctx.createGainNode() : Howler.ctx.createGain();
         self._node.gain.setValueAtTime(volume, Howler.ctx.currentTime);

@@ -92,9 +92,8 @@ var _SETTINGS = {
 		},
 		'Logo':{
 			'Enabled':true,
-			'Link':'http://marketjs.com',
-			'LinkEnabled':false,
-			'NewWindow': true,	// open link in new window, although this behavior can be override by browsers preference
+			'Link':'http://google.com',
+			'LinkEnabled':true,
 			'Width':166,
 			'Height':61,
 		}
@@ -108,7 +107,6 @@ var _SETTINGS = {
 			'Enabled':false,
 			'Link':'http://google.com',
 			'LinkEnabled':true, // Makes the logo clickable or not (ie activate/deactivate link)
-			'NewWindow': true,	// open link in new window, although this behavior can be override by browsers preference
 			'Width':280,
 			'Height':34,
 		}
@@ -116,11 +114,14 @@ var _SETTINGS = {
 
 	'MoreGames':{
 		'Enabled':true,
-		'Link':'http://www.marketjs.com/game/links/mobile',
-		'NewWindow': true,	// open link in new window, although this behavior can be override by browsers preference
+		'Link':'https://www.marketjs.com/game/links/mobile',
 	},
 		
 	'Gamecenter':{
 		'Enabled':true,
 	},
+	    'TapToStartAudioUnlock': {
+        'Enabled': false
+    }
+
 };
