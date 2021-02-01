@@ -17,16 +17,16 @@ rm "./$temparchive.zip"
 fi
 
 #to prepend "ms-appdata:///local/" prefix
-cp index.js temp.js
+cp game.js temp.js
 #echo "Modifying pathnames the manual way ..."
-#sed -f modify_animationsheet_audio_pathnames.sed temp.js > index.js
+#sed -f modify_animationsheet_audio_pathnames.sed temp.js > game.js
 
-zip -r "./$temparchive.zip" ./index.html ./index.css ./index.js ./howler.min.js ./os.js ./*.jpg ./*.png ./*.PNG ./*.gif ./*.ogg ./*.mp3 ./*.wav ./*.ttf ./*.svg ./*.otf ./*.eot ./*.woff ./*.woff2
+zip -r "./$temparchive.zip" ./index.html ./game.css ./game.js ./howler.min.js ./os.js ./*.jpg ./*.png ./*.PNG ./*.gif ./*.ogg ./*.mp3 ./*.wav ./*.ttf ./*.svg ./*.otf ./*.eot ./*.woff ./*.woff2
 
-cp temp.js index.js
+cp temp.js game.js
 rm temp.js
 
-#cp temp.js index.html
+#cp temp.js game.html
 #rm temp.html
 
 echo "Done"
