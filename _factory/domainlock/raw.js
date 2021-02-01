@@ -382,6 +382,10 @@
     } else {
         ig.main('#canvas', MyGame, fps, ig.sizeHandler.desktop.actualResolution.x, ig.sizeHandler.desktop.actualResolution.y, ig.sizeHandler.scale, ig.SplashLoader);
     }
+
+    //VisibilityHandler
+    ig.visibilityHandler = new ig.VisibilityHandler();
+    
     //Added sound handler with the tag ig.soundHandler
     ig.soundHandler = null;
     ig.soundHandler = new ig.SoundHandler();
