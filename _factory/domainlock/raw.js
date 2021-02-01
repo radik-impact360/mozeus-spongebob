@@ -31,11 +31,6 @@
             this.setupStorageManager(); // Uncomment to use Storage Manager
             this.loadData();
             this.finalize();
-
-            if (_LEADERBOARDAPI) {
-                // MarketJSPlatformAPI.initialize(ig.game.callbackFromInitialization);
-                // MarketJSPlatformLoginAPI.showRegister();
-            }
         },
         loadData:function (){
             if (ig.game.load('bgmVolume') == null) {
@@ -77,46 +72,6 @@
                 } else {
                     console.log('MarketJSGameCenter settings not defined in game settings')
                 }
-            }
-        },
-
-        callbackFromInitialization:function(response){
-            console.log('response:',response)
-            // Initialze the Login API
-            // MarketJSPlatformLoginAPI.initialize(ig.game.callbackFromLogin);
-            switch(response.status.code){
-                case 200:
-                    // LOGGED IN.... DO SOMETHING
-                    console.log('200: success');
-                    ig.game.loginResponse = response;
-                    break;
-                case 404:
-                    // NOT LOGGED IN ... DO SOMETHING
-                    console.log('404: not logged in');
-                    // MarketJSPlatformLoginAPI.showRegister();
-                    break;
-                default:
-                    console.log('404: not logged in');
-                    // MarketJSPlatformLoginAPI.showRegister();
-            }
-        },
-
-        /* MarketJS VAS Login/Registration APIs */
-        callbackFromLogin:function(response){
-            console.log('response:',response)
-            switch(response.status.code){
-                case 200:
-                    // LOGIN SUCCESSFUL
-                    console.log('200: success');
-                    ig.game.loginResponse = response;
-                    ig.game.director.loadLevel(5);
-                    break;
-                case 404:
-                    // LOGIN FAILED
-                    console.log('404: login failed');
-                    break;
-                default:
-                    console.log('unknown error');
             }
         },
 
@@ -243,48 +198,7 @@
             // OPTIONAL
             //this.resumeGame();
         },
-        popupClose:function(){
-            MarketJSPlatformPopupAPI.hide();
-            ig.game.director.loadLevel(5);
-        },
-        leaderBoardClose:function(){
-            MarketJSPlatformLeaderboardAPI.hide();
-            ig.game.director.loadLevel(1);
-        },
-        loginClose:function(){
-            if (ig.game.director.currentLevel == 4) {
-                if (ig.game.loginResponse && ig.game.loginResponse.status.code == 200) {
-                    MarketJSPlatformLoginAPI.hideAll();
-                    ig.game.director.loadLevel(1);
-                } else {
-                    MarketJSPlatformLoginAPI.showRegister();
-                }
-            } else {
-                MarketJSPlatformLoginAPI.hideLogin();
-                ig.game.director.loadLevel(1);
-            }
-        },
-        resetPasswordClose:function(){
-            if (ig.game.director.currentLevel == 4) {
-                if (ig.game.loginResponse && ig.game.loginResponse.status.code == 200) {
-                    MarketJSPlatformLoginAPI.hideAll();
-                    ig.game.director.loadLevel(1);
-                } else {
-                    MarketJSPlatformLoginAPI.showRegister();
-                }
-            } else {
-                MarketJSPlatformLoginAPI.hideResetPassword();
-                ig.game.director.loadLevel(1);
-            }
-        },
-        playAgain:function(){
-            MarketJSPlatformLoginAPI.hideAll();
-            ig.game.director.loadLevel(2);
-        },
-        goHome:function(){
-            MarketJSPlatformLoginAPI.hideAll();
-            ig.game.director.loadLevel(1);
-        },
+        
         currentBGMVolume: 1,
         addition: 0.1,
         // MODIFIED UPDATE() function to utilize Pause button. See EntityPause (pause.js)

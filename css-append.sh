@@ -7,8 +7,6 @@
 TEMP="temp.css"
 SOURCES=(
 	"main.css"
-	"base-api.css"
-	"api.css"
 	"settings/ad/mobile/preroll/themes/light/ad.css"
 	"settings/ad/mobile/header/themes/light/ad.css"
 	"settings/ad/mobile/footer/themes/light/ad.css"
