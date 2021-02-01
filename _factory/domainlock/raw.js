@@ -145,9 +145,7 @@
                 /* 0 */ LevelOpening,
                 /* 1 */ LevelHome,
                 /* 2 */ LevelAvoidX,
-                /* 3 */ LevelTutorial,
-                /* 4 */ LevelResult,
-                /* 5 */ LevelLeaderBoard
+                /* 3 */ LevelResult,
             ]);
 
             // CALL LOAD LEVELS
@@ -166,7 +164,7 @@
             //     this.spawnEntity(EntityPointerSelector, 50, 50);
             // }
 
-            if (_ENDDIRECTLY) this.director.loadLevel(4);
+            if (_ENDDIRECTLY) this.director.loadLevel(3);
             else this.director.loadLevel(0);
 
             // this.director.loadLevel(2);
